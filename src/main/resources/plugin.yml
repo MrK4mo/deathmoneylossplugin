@@ -1,0 +1,23 @@
+name: DeathMoneyLossPlugin
+version: 1.0.0
+main: bladesmp.deathmoneylossplugin.DeathMoneyLossPlugin
+api-version: 1.21
+folia-supported: true
+softdepend: [Vault]
+author: MrEnte_
+description: Ein Plugin das beim Tod einen konfigurierbaren Prozentsatz des Geldes an den Killer überträgt
+
+commands:
+  deathmoneyreload:
+    description: Lädt die Plugin-Konfiguration neu
+    usage: /deathmoneyreload
+    permission: deathmoneylossplugin.reload
+    permission-message: Du hast keine Berechtigung für diesen Befehl!
+
+permissions:
+  deathmoneylossplugin.reload:
+    description: Erlaubt das Neuladen der Plugin-Konfiguration
+    default: op
+  deathmoneylossplugin.exempt:
+    description: Spieler mit dieser Berechtigung verlieren beim Tod kein Geld
+    default: false

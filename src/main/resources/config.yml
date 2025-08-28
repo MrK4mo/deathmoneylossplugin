@@ -1,0 +1,73 @@
+# Verfügbare Platzhalter:
+# {amount} - Geldbetrag (formatiert mit Kommas)
+# {percentage} - Prozentsatz des Verlusts (nur bei Opfer-Nachrichten)
+# {victim} - Name des Opfers (nur bei Killer-Nachrichten)
+
+# DeathMoneyLoss Plugin Konfiguration
+# Erstellt für Folia 1.21.5 mit Vault Economy
+# Alle Nachrichten verwenden MiniMessage Format
+
+# Prozentsatz des Geldes das beim Tod an den Killer übertragen wird (0-100)
+# 0 = kein Geldtransfer, 100 = komplettes Geld übertragen
+loss-percentage: 10.0
+
+# Nachrichten Konfiguration
+messages:
+  # Nachricht für das Opfer (wird beim Respawn gesendet)
+  victim:
+    enable: true
+    text: "<red>Du hast <yellow>{amount}€</yellow> verloren! (<yellow>{percentage}%</yellow> deines Geldes)"
+
+  # Nachricht für den Killer (wird sofort gesendet)
+  killer:
+    enable: true
+    text: "<green>Du hast <yellow>{amount}€</yellow> von <yellow>{victim}</yellow> erhalten!"
+
+# Action Bar Konfiguration
+actionbars:
+    # Action Bar für das Opfer (wird beim Respawn gezeigt)
+  victim:
+    enable: true
+    text: "<red>-{amount}€"
+
+  # Action Bar für den Killer (wird sofort gezeigt)
+  killer:
+    enable: true
+    text: "<green>+{amount}€"
+
+# Sound Konfiguration
+sounds:
+  # Sound für das Opfer (wird beim Respawn abgespielt)
+  victim:
+    enable: true
+    sound: "ENTITY_VILLAGER_NO"  # Verfügbare Sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+    volume: 1.0
+    pitch: 1.0
+
+  # Sound für den Killer (wird sofort abgespielt)
+  killer:
+    enable: true
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    volume: 1.0
+    pitch: 1.0
+
+
+
+# MiniMessage Format Beispiele:
+# <red>Rot</red>
+# <green>Grün</green>
+# <yellow>Gelb</yellow>
+# <blue>Blau</blue>
+# <bold>Fett</bold>
+# <italic>Kursiv</italic>
+# <underline>Unterstrichen</underline>
+# <strikethrough>Durchgestrichen</strikethrough>
+# <gradient:red:blue>Verlauf</gradient>
+# <rainbow>Regenbogen</rainbow>
+# <hover:show_text:'Tooltip'>Text mit Tooltip</hover>
+# <click:run_command:'/help'>Klickbarer Text</click>
+
+# Zusätzliche Einstellungen
+settings:
+  # Verzögerung in Ticks bevor die Opfer-Nachricht beim Respawn gesendet wird (20 Ticks = 1 Sekunde)
+  respawn-message-delay: 10

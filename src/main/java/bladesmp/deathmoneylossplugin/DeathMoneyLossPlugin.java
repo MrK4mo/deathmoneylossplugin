@@ -191,11 +191,8 @@ public final class DeathMoneyLossPlugin extends JavaPlugin implements Listener {
         // Geld dem Killer geben
         economy.depositPlayer(killer, amount);
 
-        // Nachricht für das Opfer speichern (wird beim Respawn gesendet)
-        PendingMessage pendingMessage = new PendingMessage(
-                amount, lossPercentage, killer.getName()
-        );
-        pendingMessages.put(victim.getUniqueId(), pendingMessage);
+        // Sofort Nachricht für das Opfer senden
+        sendVictimNotification(victim, amount, lossPercentage);
 
         // Sofort Nachricht und ActionBar für den Killer senden
         sendKillerNotification(killer, amount, victim.getName());
@@ -203,27 +200,8 @@ public final class DeathMoneyLossPlugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
-        UUID playerId = player.getUniqueId();
-
-        // Prüfen ob eine ausstehende Nachricht vorliegt
-        if (pendingMessages.containsKey(playerId)) {
-            PendingMessage pending = pendingMessages.get(playerId);
-
-            // Kurz warten und dann Nachrichten senden
-            if (isFolia()) {
-                player.getScheduler().runDelayed(this, (task) -> {
-                    sendVictimNotification(player, pending.amount, pending.percentage);
-                }, null, 10L); // 0.5 Sekunden Verzögerung
-            } else {
-                Bukkit.getScheduler().runTaskLater(this, () -> {
-                    sendVictimNotification(player, pending.amount, pending.percentage);
-                }, 10L);
-            }
-
-            // Ausstehende Nachricht entfernen
-            pendingMessages.remove(playerId);
-        }
+        // Respawn Event wird nicht mehr benötigt, da Nachrichten sofort gesendet werden
+        // Entfernt zur Klarheit, aber könnte für zukünftige Features verwendet werden
     }
 
     private void sendVictimNotification(Player victim, double amount, double percentage) {
@@ -233,16 +211,29 @@ public final class DeathMoneyLossPlugin extends JavaPlugin implements Listener {
         if (enableVictimMessage) {
             String message = victimMessage
                     .replace("{amount}", formattedAmount)
-                    .replace("{percentage}", String.valueOf(percentage));
-            Component component = miniMessage.deserialize(message);
-            victim.sendMessage(component);
+                    .replace("{percentage}", String.format("%.1f", percentage));
+
+            try {
+                Component component = miniMessage.deserialize(message);
+                victim.sendMessage(component);
+            } catch (Exception e) {
+                // Fallback für MiniMessage Fehler
+                getLogger().warning("MiniMessage parsing failed for victim message: " + e.getMessage());
+                victim.sendMessage("Du hast " + formattedAmount + "€ verloren! (" + String.format("%.1f", percentage) + "% deines Geldes)");
+            }
         }
 
         // Action Bar
         if (enableVictimActionBar) {
             String actionBarText = victimActionBar.replace("{amount}", formattedAmount);
-            Component actionBarComponent = miniMessage.deserialize(actionBarText);
-            victim.sendActionBar(actionBarComponent);
+            try {
+                Component actionBarComponent = miniMessage.deserialize(actionBarText);
+                victim.sendActionBar(actionBarComponent);
+            } catch (Exception e) {
+                // Fallback für MiniMessage Fehler
+                getLogger().warning("MiniMessage parsing failed for victim action bar: " + e.getMessage());
+                victim.sendActionBar(Component.text("-" + formattedAmount + "€"));
+            }
         }
 
         // Sound
@@ -259,15 +250,28 @@ public final class DeathMoneyLossPlugin extends JavaPlugin implements Listener {
             String message = killerMessage
                     .replace("{amount}", formattedAmount)
                     .replace("{victim}", victimName);
-            Component component = miniMessage.deserialize(message);
-            killer.sendMessage(component);
+
+            try {
+                Component component = miniMessage.deserialize(message);
+                killer.sendMessage(component);
+            } catch (Exception e) {
+                // Fallback für MiniMessage Fehler
+                getLogger().warning("MiniMessage parsing failed for killer message: " + e.getMessage());
+                killer.sendMessage("Du hast " + formattedAmount + "€ von " + victimName + " erhalten!");
+            }
         }
 
         // Action Bar
         if (enableKillerActionBar) {
             String actionBarText = killerActionBar.replace("{amount}", formattedAmount);
-            Component actionBarComponent = miniMessage.deserialize(actionBarText);
-            killer.sendActionBar(actionBarComponent);
+            try {
+                Component actionBarComponent = miniMessage.deserialize(actionBarText);
+                killer.sendActionBar(actionBarComponent);
+            } catch (Exception e) {
+                // Fallback für MiniMessage Fehler
+                getLogger().warning("MiniMessage parsing failed for killer action bar: " + e.getMessage());
+                killer.sendActionBar(Component.text("+" + formattedAmount + "€"));
+            }
         }
 
         // Sound
@@ -314,7 +318,7 @@ public final class DeathMoneyLossPlugin extends JavaPlugin implements Listener {
         return lossPercentage;
     }
 
-    // Hilfsklasse für ausstehende Nachrichten
+    // Hilfsklasse für ausstehende Nachrichten (nicht mehr verwendet, aber beibehalten für mögliche zukünftige Features)
     private static class PendingMessage {
         final double amount;
         final double percentage;

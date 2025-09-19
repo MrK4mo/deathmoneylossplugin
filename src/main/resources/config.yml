@@ -13,7 +13,7 @@ loss-percentage: 10.0
 
 # Nachrichten Konfiguration
 messages:
-  # Nachricht für das Opfer (wird beim Respawn gesendet)
+  # Nachricht für das Opfer (wird sofort beim Tod gesendet)
   victim:
     enable: true
     text: "<red>Du hast <yellow>{amount}€</yellow> verloren! (<yellow>{percentage}%</yellow> deines Geldes)"
@@ -25,7 +25,7 @@ messages:
 
 # Action Bar Konfiguration
 actionbars:
-    # Action Bar für das Opfer (wird beim Respawn gezeigt)
+  # Action Bar für das Opfer (wird sofort beim Tod gezeigt)
   victim:
     enable: true
     text: "<red>-{amount}€"
@@ -37,7 +37,7 @@ actionbars:
 
 # Sound Konfiguration
 sounds:
-  # Sound für das Opfer (wird beim Respawn abgespielt)
+  # Sound für das Opfer (wird sofort beim Tod abgespielt)
   victim:
     enable: true
     sound: "ENTITY_VILLAGER_NO"  # Verfügbare Sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
@@ -50,8 +50,6 @@ sounds:
     sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     volume: 1.0
     pitch: 1.0
-
-
 
 # MiniMessage Format Beispiele:
 # <red>Rot</red>
@@ -66,8 +64,3 @@ sounds:
 # <rainbow>Regenbogen</rainbow>
 # <hover:show_text:'Tooltip'>Text mit Tooltip</hover>
 # <click:run_command:'/help'>Klickbarer Text</click>
-
-# Zusätzliche Einstellungen
-settings:
-  # Verzögerung in Ticks bevor die Opfer-Nachricht beim Respawn gesendet wird (20 Ticks = 1 Sekunde)
-  respawn-message-delay: 10
